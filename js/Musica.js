@@ -55,17 +55,13 @@ function mostraMusica() {
 
     const musica = JSON.parse(musicaString);
 
-    document.getElementById("titulo").textContent =
-        `Título: ${musica.titulo}`;
+    document.getElementById("titulo").textContent = `Título: ${musica.titulo}`;
 
-    document.getElementById("artista").textContent =
-        `Artista: ${musica.artista}`;
+    document.getElementById("artista").textContent = `Artista: ${musica.artista}`;
 
-    document.getElementById("album").textContent =
-        `Álbum: ${musica.album}`;
+    document.getElementById("album").textContent = `Álbum: ${musica.album}`;
 
-    document.getElementById("dataLancamento").textContent =
-        `Lançamento: ${musica.dataLancamento}`;
+    document.getElementById("dataLancamento").textContent = `Lançamento: ${musica.dataLancamento}`;
 
     if (musica.duracao > 0) {
 
