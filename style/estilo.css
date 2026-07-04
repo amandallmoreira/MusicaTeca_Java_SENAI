@@ -45,6 +45,16 @@ h1 {
   text-shadow: 3px 5px 10px var(--inkBlack);
 }
 
+.titulo {
+    font-size: 6rem; /* Desktop */
+}
+
+@media (max-width: 768px) {
+    .titulo {
+        font-size: 2.5rem; /* Mobile */
+    }
+}
+
 html,
 body {
   background: var(--inkBlack);
@@ -64,6 +74,15 @@ body {
   font-family: "Manrope", sans-serif;
   color: whitesmoke;
 }
+input{
+  width: clamp(250px, 50vw, 600px);
+  margin-left: 20px;
+}
+
+.pesquisar{
+  margin-right: 20px;
+}
+
 
 .vidroInput,
 .vidroInput:focus {
@@ -154,7 +173,7 @@ footer {
 }
 
 .estiloFooter a{
-  color: #001d3d;
+  color: whitesmoke;
   text-decoration: none;
 
 }
@@ -172,4 +191,8 @@ footer {
   backdrop-filter: blur(11px);
   -webkit-backdrop-filter: blur(11px);
   border: 1px solid rgba(255, 255, 255, 0.27);
+}
+
+.bi-github{
+  margin:2px;
 }
