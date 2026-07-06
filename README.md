@@ -1,7 +1,6 @@
 # MusicaTeca_Java_SENAI
+##Catálogo Musical ("MusicaTeca")
 Projeto colaborativo de um catálogo musical(Musica Teca) para o curso de Java do SENAI, 2026.
-# Catálogo Musical ("MusicaTeca")
-
 Um portal voltado para a busca de informações sobre artistas musicais e organização de um catálogo personalizado.
 
 ## Consumo de API
