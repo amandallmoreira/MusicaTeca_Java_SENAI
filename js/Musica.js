@@ -10,13 +10,6 @@ async function pesquisaMusica(event) {
   }
 
   try {
-    // Encontra o modal por id
-    const modalElement = document.getElementById("exibirDadosMusica");
-    // Inicializa o modal do bootstrap
-    const myModal = new bootstrap.Modal(modalElement);
-    // Abre o modal
-    myModal.show();
-
     const url = `https://musicbrainz.org/ws/2/recording?query=${encodeURIComponent(nomeMusica)}&fmt=json`;
 
     const response = await fetch(url);
@@ -27,8 +20,9 @@ async function pesquisaMusica(event) {
       const musica = dados.recordings[0];
 
       const musicaSalva = {
-        titulo: musica.title,
+
         artistaMusica: musica["artist-credit"]?.[0]?.name || "Não informado",
+        titulo: musica.title,
         album: musica.releases?.[0]?.title || "Não informado",
         dataLancamento: musica.releases?.[0]?.date || "Não informado",
         duracao: musica.length || 0,
@@ -36,7 +30,15 @@ async function pesquisaMusica(event) {
 
       localStorage.setItem("musica", JSON.stringify(musicaSalva));
 
+      salvarHistorico(musicaSalva)
       mostraMusica();
+
+      // Encontra o modal por id
+      const modalElement = document.getElementById("exibirDadosMusica");
+      // Inicializa o modal do bootstrap
+      const myModal = new bootstrap.Modal(modalElement);
+      // Abre o modal
+      myModal.show();
     } else {
       alert("Música não encontrada!");
     }
@@ -58,15 +60,13 @@ function mostraMusica() {
 
   document.getElementById("titulo").textContent = `Título: ${musica.titulo}`;
 
-    document.getElementById("titulo").textContent = `Título: ${musica.titulo}`;
+  document.getElementById("artistaMusica").textContent = `Artista: ${musica.artistaMusica}`;
 
-    document.getElementById("artista").textContent = `Artista: ${musica.artista}`;
+  document.getElementById("album").textContent = `Álbum: ${musica.album}`;
 
-    document.getElementById("album").textContent = `Álbum: ${musica.album}`;
+  document.getElementById("dataLancamento").textContent = `Lançamento: ${musica.dataLancamento}`;
 
-    document.getElementById("dataLancamento").textContent = `Lançamento: ${musica.dataLancamento}`;
-
-//transforma a duração das músicas de milisegundos em minutos e segundos
+  //transforma a duração das músicas de milisegundos em minutos e segundos
   if (musica.duracao > 0) {
     const minutos = Math.floor(musica.duracao / 60000);
     const segundos = Math.floor((musica.duracao % 60000) / 1000);
@@ -76,4 +76,13 @@ function mostraMusica() {
   } else {
     document.getElementById("duracao").textContent = "Duração: Não informada";
   }
+}
+
+function salvarHistorico(musica) {
+
+  let historicoLocal = JSON.parse(localStorage.getItem("musicaSalva")) || [];
+
+  historicoLocal.push(musica);
+
+  localStorage.setItem("musicaSalva", JSON.stringify(historicoLocal));
 }

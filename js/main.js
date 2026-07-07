@@ -1,124 +1,114 @@
 async function pesquisaArtista(event) {
-  // Previne a atualização da página
-  event.preventDefault();
 
-  const nomeArtista = document.getElementById("nomeArtista").value;
+    // Previne a atualização da página
+    event.preventDefault();
 
-  if (nomeArtista == "") {
-    window.alert("Informe um nome válido! Não pode ser vazio!");
-    return;
-  }
-  try {
-    // Encontra o modal por id
-    const modalElement = document.getElementById("exibirDadosArtista");
-    // Inicializa o modal do bootstrap
-    const myModal = new bootstrap.Modal(modalElement);
-    // Abre o modal
-    myModal.show();
+    const nomeArtista = document.getElementById("nomeArtista").value;
 
-    const url = `https://musicbrainz.org/ws/2/artist?query=${encodeURIComponent(nomeArtista)}&fmt=json`;
-
-    const response = await fetch(url);
-    const dados = await response.json();
-    console.log(dados);
-
-    if (dados.artists.length > 0) {
-      const artista = dados.artists[0];
-
-      //localStorage.setItem("Nome Artista", JSON.stringify(dados.artists[0]));
-
-      const artistaSalvo = {
-        //?. -> significa que vai buscar o campo(nome) e se tiver vai preencher
-        // || -> ou, se o valor for vazio vai aparecer "Não informado"
-        nome: artista?.name || "Não informado",
-        pais: artista?.country || "Não informado",
-        tipo: artista?.type || "Não informado",
-        tag: artista?.tags || "Não informado",
-        area: artista?.area?.name || "Não informado",
-        cidadeOrigem: artista["begin-area"]?.name || "Não informado",
-        anoInicio: artista["life-span"]?.begin || "Não informado",
-      };
-
-      localStorage.setItem("artista", JSON.stringify(artistaSalvo));
-
-      console.log(artistaSalvo);
-      mostraArtista();
-      // window.location.href = "../pages/apresentaDados.html";
-    } else {
-      alert("Artista/ banda não encontrado!!");
+    if (nomeArtista == "") {
+        window.alert("Informe um nome válido! Não pode ser vazio!");
+        return;
     }
-  } catch (erro) {
-    console.log(erro);
-    alert("Erro ao pesquisar Artista.");
-  }
+    try {
+        const url = `https://musicbrainz.org/ws/2/artist?query=${encodeURIComponent(nomeArtista)}&fmt=json`;
 
-  // console.log("Pesquisa artista")
+        const response = await fetch(url);
+        const dados = await response.json();
+        console.log(dados);
+
+        if (dados.artists.length > 0) {
+            const artista = dados.artists[0];
+
+            //localStorage.setItem("Nome Artista", JSON.stringify(dados.artists[0]));
+
+            const artistaSalvo = {
+                //?. -> significa que vai buscar o campo(nome) e se tiver vai preencher
+                // || -> ou, se o valor for vazio vai aparecer "Não informado"
+                nome: artista?.name || "Não informado",
+                pais: artista?.country || "Não informado",
+                tipo: artista?.type || "Não informado",
+                tag: artista?.tags || "Não informado",
+                area: artista?.area?.name || "Não informado",
+                cidadeOrigem: artista["begin-area"]?.name || "Não informado",
+                anoInicio: artista["life-span"]?.begin || "Não informado",
+            };
+            // Encontra o modal por id
+            const modalElement = document.getElementById("exibirDadosArtista");
+            // Inicializa o modal do bootstrap
+            const myModal = new bootstrap.Modal(modalElement);
+            // Abre o modal
+            myModal.show();
+
+            localStorage.setItem("artista", JSON.stringify(artistaSalvo));
+
+            salvarHistorico(artistaSalvo);
+            console.log(artistaSalvo);
+            mostraArtista();
+            // window.location.href = "../pages/apresentaDados.html";
+        } else {
+            
+            alert("Artista/ banda não encontrado!!");
+        }
+    } catch (erro) {
+        console.log(erro);
+        alert("Erro ao pesquisar Artista.");
+    }
+
 }
 
 function mostraArtista() {
-  const artistaString = localStorage.getItem("artista");
-  // console.log(artistaString);]
-  //Se não tem artista sai da função e para
-  if (!artistaString) {
-    return;
-  }
-  const artista = JSON.parse(artistaString);
+    const artistaString = localStorage.getItem("artista");
+    // console.log(artistaString);]
+    //Se não tem artista sai da função e para
+    if (!artistaString) {
+        return;
+    }
+    const artista = JSON.parse(artistaString);
 
-  const pNome = document.getElementById("nome");
-  pNome.textContent = `Nome: ${artista.nome}`;
+    const pNome = document.getElementById("nome");
+    pNome.textContent = `Nome: ${artista.nome}`;
 
-  const pPais = document.getElementById("pais");
-  pPais.textContent = `Pais: ${artista.pais}`;
+    const pPais = document.getElementById("pais");
+    pPais.textContent = `Pais: ${artista.pais}`;
 
-  const pTipo = document.getElementById("tipo");
-  pTipo.textContent = `Tipo: ${artista.tipo}`;
+    const pTipo = document.getElementById("tipo");
+    pTipo.textContent = `Tipo: ${artista.tipo}`;
 
-  const pTag = document.getElementById("tag");
+    const pTag = document.getElementById("tag");
 
-  for (let i = 0; i < artista.tag.length && i < 5; i++) {
-    //console.log(artista.tag[i].name);
-    pTag.textContent += `${artista.tag[i].name}, `;
-  }
-  const pArea = document.getElementById("area");
-  pArea.textContent = `Area: ${artista.area}`;
+    // pTag.textContent = "Tags: ";
+    for (let i = 0; i < artista.tag.length && i < 5; i++) {
+        //console.log(artista.tag[i].name);
+        pTag.textContent += `${artista.tag[i].name}, `;
+    }
+    const pArea = document.getElementById("area");
+    pArea.textContent = `Area: ${artista.area}`;
 
-  const pcidadeOrigem = document.getElementById("cidadeOrigem");
-  pcidadeOrigem.textContent = `Cidade de Origem: ${artista.cidadeOrigem}`;
+    const pcidadeOrigem = document.getElementById("cidadeOrigem");
+    pcidadeOrigem.textContent = `Cidade de Origem: ${artista.cidadeOrigem}`;
 
-  const PanoInicio = document.getElementById("anoInicio");
-  PanoInicio.textContent = `Ano de Inicio: ${artista.anoInicio}`;
-  // console.log(artista);
-}
-
-function pesquisaMusica() {
-  //console.log("Pesquisa musica")
-}
-
-function apagarDados() {
-  //localStorage.clear();
+    const PanoInicio = document.getElementById("anoInicio");
+    PanoInicio.textContent = `Ano de Inicio: ${artista.anoInicio}`;
+    // console.log(artista);
 }
 
 function salvarHistorico(artista) {
-  /* console.log("Função: " + nomeDaFuncao);
-    console.log("Primeiro número: " + num1);
-    console.log("Segundo número: " + num2);
-    console.log("Resultado: " + resultado);
-    console.log("--------------------------------");
 
-    let operacao = {
-        funcao: nomeDaFuncao,
-        numero1: num1,
-        numero2: num2,
-        resultado: resultado
-    };
-*/
-  let historicoLocal =
-    JSON.parse(localStorage.getItem("historicoArtista")) || [];
+    let historicoLocal = JSON.parse(localStorage.getItem("historicoArtista")) || [];
 
-  historicoLocal.push(artista);
+    historicoLocal.push(artista);
 
-  localStorage.setItem("historicoArtista", JSON.stringify(historicoLocal));
+    localStorage.setItem("historicoArtista", JSON.stringify(historicoLocal));
 }
+
+
+
+
+
+
+
+
+
 
 /*
 Comentários
